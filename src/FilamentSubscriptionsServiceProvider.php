@@ -3,7 +3,8 @@
 namespace TomatoPHP\FilamentSubscriptions;
 
 use Illuminate\Support\ServiceProvider;
-
+use Livewire\Livewire;
+use TomatoPHP\FilamentSubscriptions\Livewire\Billing;
 
 class FilamentSubscriptionsServiceProvider extends ServiceProvider
 {
@@ -47,6 +48,8 @@ class FilamentSubscriptionsServiceProvider extends ServiceProvider
 
       //Register Routes
       $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+
+      Livewire::component('billing', Billing::class);
    }
 
    public function boot(): void

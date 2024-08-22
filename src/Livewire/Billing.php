@@ -104,6 +104,8 @@ class Billing extends Component
 
     public function render()
     {
-        return view('filament-subscriptions::livewire.billing');
+        return view('filament-subscriptions::livewire.billing')
+            ->extends('filament-subscriptions::layouts.billing')
+            ->section('content');;
     }
 }
