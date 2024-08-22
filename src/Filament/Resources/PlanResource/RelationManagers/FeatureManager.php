@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use TomatoPHP\FilamentTranslationComponent\Components\Translation;
 
@@ -15,17 +16,31 @@ class FeatureManager extends RelationManager
 {
     protected static string $relationship = 'features';
 
-    public static function getNavigationLabel(): string
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return trans('filament-subscriptions::messages.features.title');
     }
 
-    public static function getPluralLabel(): ?string
-    {
-        return trans('filament-subscriptions::messages.features.title');
-    }
-
+    /**
+     * @return string|null
+     */
     public static function getLabel(): ?string
+    {
+        return trans('filament-subscriptions::messages.features.title');
+    }
+
+    /**
+     * @return string|null
+     */
+    public static function getModelLabel(): ?string
+    {
+        return trans('filament-subscriptions::messages.features.single');
+    }
+
+    /**
+     * @return string|null
+     */
+    public static function getPluralLabel(): ?string
     {
         return trans('filament-subscriptions::messages.features.title');
     }

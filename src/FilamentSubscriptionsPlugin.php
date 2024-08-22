@@ -8,11 +8,11 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 
 
-class FilamentSubscriptions implements Plugin
+class FilamentSubscriptionsPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'filament-pos';
+        return 'filament-subscriptions';
     }
 
     public function register(Panel $panel): void

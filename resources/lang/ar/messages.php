@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "title" => "الاشتراك",
+    "group" => "الاشتراك",
     "plans" => [
         "title" => "الخطط",
         "columns" => [
@@ -11,7 +11,9 @@ return [
             "signup_fee" => "رسوم التسجيل",
             "invoice_interval" => "فترة الفاتورة",
             "invoice_period" => "مدة الفاتورة",
-            "trial_period" => "فترة التجربة",
+            "trial_interval" => "فترة التجربة",
+            "trial_period" => "مدة التجربة",
+            "currency" => "العملة",
             "is_active" => "هل هو نشط؟",
             "day" => "يوم",
             "month" => "شهر",
@@ -19,7 +21,8 @@ return [
         ]
     ],
     "features" => [
-        "title" => "الميزات",
+        "title" => "المميزات",
+        "single" => "ميزة",
         "columns" => [
             "name" => "الاسم",
             "description" => "الوصف",
@@ -77,6 +80,10 @@ return [
             "all" => "الكل",
             "yes" => "نعم",
             "no" => "لا",
+        ],
+        "actions" => [
+            "cancel" => "إلغاء",
+            "renew" => "تجديد",
         ]
     ],
     "notifications" => [
@@ -117,14 +124,17 @@ return [
         'billing_management' => 'إدارة الفواتير',
         'signed_in_as' => 'مسجل الدخول كـ',
         'managing_billing_for' => 'إدارة الفواتير لـ',
+        'our_billing_management' => 'يتيح لك بوابة إدارة الفواتير لدينا إدارة خطة الاشتراك الخاصة بك، وطريقة الدفع، وتنزيل الفواتير الأخيرة بسهولة.',
         'subscribe' => 'اشترك',
+        'trial' => 'تجريبي',
+        'free' => 'مجاني',
         'current_subscription' => 'الاشتراك الحالي',
         'renew_subscription' => 'تجديد الاشتراك',
         'change_subscription' => 'تغيير الاشتراك',
-        'no_plans_available' => 'لا توجد خطط متاحة',
         'cancel_subscription' => 'إلغاء الاشتراك',
-        'cancel_subscription_info' => 'يمكنك إلغاء اشتراكك في أي وقت. بمجرد إلغاء اشتراكك، سيكون لديك خيار استخدام الاشتراك حتى نهاية دورة الفوترة الحالية.',
+        'cancel_subscription_info' => 'يمكنك إلغاء اشتراكك في أي وقت. بعد إلغاء الاشتراك، سيكون لديك خيار استخدام الاشتراك حتى نهاية دورة الفوترة الحالية.',
+        'no_plans_available' => 'لا توجد خطط متاحة',
         'return_to' => 'العودة إلى',
-        'it_looks_like_no_active_subscription' => 'يبدو أنك لا تمتلك اشتراكًا نشطًا. يمكنك اختيار أحد خطط الاشتراك أدناه للبدء. يمكن تغيير أو إلغاء خطط الاشتراك حسب راحتك.',
+        'it_looks_like_no_active_subscription' => 'يبدو أنك لا تملك اشتراكاً نشطاً. يمكنك اختيار إحدى خطط الاشتراك أدناه للبدء. يمكن تغيير أو إلغاء خطط الاشتراك حسب راحتك.',
     ]
 ];

@@ -5,7 +5,7 @@ namespace TomatoPHP\FilamentSubscriptions;
 use Illuminate\Support\ServiceProvider;
 
 
-class FilamentSubscriptionServiceProvider extends ServiceProvider
+class FilamentSubscriptionsServiceProvider extends ServiceProvider
 {
    public function register(): void
    {

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "title" => "Subscription",
+    "group" => "Subscription",
     "plans" => [
         "title" => "Plans",
         "columns" => [
@@ -11,9 +11,9 @@ return [
             "signup_fee" => "Signup fee",
             "invoice_interval" => "Invoice interval",
             "invoice_period" => "Invoice period",
-            "invoice_period" => "Invoice period",
+            "trial_interval" => "Trial interval",
             "trial_period" => "Trial period",
-            "trial_period" => "Trial period",
+            "currency" => "Currency",
             "is_active" => "Is Active?",
             "day" => "Day",
             "month" => "Month",
@@ -22,6 +22,7 @@ return [
     ],
     "features" => [
         "title" => "Features",
+        "single" => "Feature",
         "columns" => [
             "name" => "Name",
             "description" => "Description",
@@ -79,7 +80,11 @@ return [
             "all" => "All",
             "yes" => "Yes",
             "no" => "No",
-        ]
+        ],
+        "actions" => [
+            "cancel" => "Cancel",
+            "renew" => "Renew",
+        ],
     ],
     "notifications" => [
         "invalid" => [

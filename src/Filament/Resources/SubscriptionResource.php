@@ -4,7 +4,7 @@ namespace TomatoPHP\FilamentSubscriptions\Filament\Resources;
 
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource\Pages;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource\RelationManagers;
-use TomatoPHP\FilamentSubscriptions\Models\User;
+use App\Models\User;
 use TomatoPHP\FilamentSubscriptions\Services\FilamentSubscriptionSubscribers;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -132,13 +132,14 @@ class SubscriptionResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                Tables\Filters\Filter::make(trans('filament-subscriptions::messages.filters.columns.date_range'))
+                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\Filter::make(trans('filament-subscriptions::messages.subscriptions.filters.date_range'))
                     ->form([
                         Forms\Components\DatePicker::make('start_date')
-                            ->label(trans('filament-subscriptions::messages.filters.columns.start_date'))
+                            ->label(trans('filament-subscriptions::messages.subscriptions.filters.start_date'))
                             ->required(),
                         Forms\Components\DatePicker::make('end_date')
-                            ->label(trans('filament-subscriptions::messages.filters.columns.end_date'))
+                            ->label(trans('filament-subscriptions::messages.subscriptions.filters.end_date'))
                             ->required(),
                     ])
                     ->query(function (Builder $query, array $data) {
@@ -147,15 +148,15 @@ class SubscriptionResource extends Resource
                         }
                         return $query->whereBetween('starts_at', [$data['start_date'], $data['end_date']]);
                     }),
-                Tables\Filters\Filter::make(trans('filament-subscriptions::messages.filters.columns.canceled'))
+                Tables\Filters\Filter::make(trans('filament-subscriptions::messages.subscriptions.filters.canceled'))
                     ->form([
                         Forms\Components\Select::make('canceled')
                             ->options([
-                                '' => trans('filament-subscriptions::messages.filters.columns.all'),
-                                '1' => trans('filament-subscriptions::messages.filters.columns.yes'),
-                                '0' => trans('filament-subscriptions::messages.filters.columns.no'),
+                                '' => trans('filament-subscriptions::messages.subscriptions.filters.all'),
+                                '1' => trans('filament-subscriptions::messages.subscriptions.filters.yes'),
+                                '0' => trans('filament-subscriptions::messages.subscriptions.filters.no'),
                             ])
-                            ->label(trans('filament-subscriptions::messages.filters.columns.canceled'))
+                            ->label(trans('filament-subscriptions::messages.subscriptions.filters.canceled'))
                             ->required(),
                     ])
                     ->query(function (Builder $query, array $data) {
@@ -174,11 +175,13 @@ class SubscriptionResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('cancel')
+                    ->label(trans('filament-subscriptions::messages.subscriptions.actions.cancel'))
                     ->icon('heroicon-o-x-circle')
                     ->color('warning')
                     ->action(fn(Subscription $record) => $record->cancel())
                     ->requiresConfirmation(),
                 Tables\Actions\Action::make('renew')
+                    ->label(trans('filament-subscriptions::messages.subscriptions.actions.renew'))
                     ->icon('heroicon-o-arrow-path-rounded-square')
                     ->color('info')
                     ->action(fn(Subscription $record) => $record->renew())

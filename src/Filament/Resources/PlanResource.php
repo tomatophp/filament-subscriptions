@@ -25,7 +25,7 @@ class PlanResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return trans('filament-subscriptions::messages.title');
+        return trans('filament-subscriptions::messages.group');
     }
 
     public static function getNavigationLabel(): string
@@ -71,7 +71,7 @@ class PlanResource extends Resource
                                 Interval::YEAR->value => trans('filament-subscriptions::messages.plans.columns.year'),
                             ])->required(),
                         Forms\Components\TextInput::make('invoice_period')
-                            ->label(trans('filament-subscriptions::messages.plans.columns.invoice_interval'))
+                            ->label(trans('filament-subscriptions::messages.plans.columns.invoice_period'))
                             ->numeric()
                             ->required(),
                         Forms\Components\Select::make('trial_interval')
@@ -113,7 +113,7 @@ class PlanResource extends Resource
             ])
             ->defaultSort('sort_order', 'aces')
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
