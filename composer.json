@@ -21,8 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "TomatoPHP\\FilamentSubscriptions\\FilamentSubscriptionsServiceProvider",
-                "TomatoPHP\\FilamentSubscriptions\\FilamentSubscriptionsProvider"
+                "TomatoPHP\\FilamentSubscriptions\\FilamentSubscriptionsServiceProvider"
             ]
         }
     },
