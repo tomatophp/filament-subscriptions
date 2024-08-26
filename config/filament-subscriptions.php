@@ -1,5 +1,5 @@
 <?php
 
 return [
-    //You config go here...
+   "route" => "/admin/billing"
 ];

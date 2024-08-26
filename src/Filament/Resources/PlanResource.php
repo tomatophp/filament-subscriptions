@@ -2,6 +2,7 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Resources;
 
+use TomatoPHP\FilamentLocations\Models\Currency;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\RelationManagers;
 use Filament\Forms;
@@ -50,20 +51,32 @@ class PlanResource extends Resource
                 Forms\Components\Section::make()
                     ->schema([
                         Translation::make('name')
+                            ->columnSpanFull()
                             ->label(trans('filament-subscriptions::messages.plans.columns.name'))
                             ->required(),
                         Translation::make('description')
+                            ->columnSpanFull()
                             ->label(trans('filament-subscriptions::messages.plans.columns.description')),
+                        Forms\Components\Select::make('currency')
+                            ->columnSpanFull()
+                            ->default('USD')
+                            ->searchable()
+                            ->label(trans('filament-subscriptions::messages.plans.columns.currency'))
+                            ->options(Currency::query()->pluck('name', 'iso')->toArray())
+                            ->required(),
                         Forms\Components\TextInput::make('price')
+                            ->default(0)
                             ->label(trans('filament-subscriptions::messages.plans.columns.price'))
                             ->required()
                             ->numeric()
                             ->prefix('$'),
                         Forms\Components\TextInput::make('signup_fee')
                             ->label(trans('filament-subscriptions::messages.plans.columns.signup_fee'))
+                            ->default(0)
                             ->numeric()
                             ->prefix('$'),
                         Forms\Components\Select::make('invoice_interval')
+                            ->default(Interval::MONTH->value)
                             ->label(trans('filament-subscriptions::messages.plans.columns.invoice_interval'))
                             ->options([
                                 Interval::DAY->value => trans('filament-subscriptions::messages.plans.columns.day'),
@@ -72,10 +85,13 @@ class PlanResource extends Resource
                             ])->required(),
                         Forms\Components\TextInput::make('invoice_period')
                             ->label(trans('filament-subscriptions::messages.plans.columns.invoice_period'))
+                            ->default(0)
                             ->numeric()
                             ->required(),
                         Forms\Components\Select::make('trial_interval')
+                            ->default(Interval::MONTH->value)
                             ->label(trans('filament-subscriptions::messages.plans.columns.trial_interval'))
+                            ->default(0)
                             ->options([
                                 Interval::DAY->value => trans('filament-subscriptions::messages.plans.columns.day'),
                                 Interval::MONTH->value => trans('filament-subscriptions::messages.plans.columns.month'),
@@ -83,10 +99,8 @@ class PlanResource extends Resource
                             ]),
                         Forms\Components\TextInput::make('trial_period')
                             ->label(trans('filament-subscriptions::messages.plans.columns.trial_period'))
+                            ->default(0)
                             ->numeric(),
-                        Forms\Components\TextInput::make('currency')
-                            ->label(trans('filament-subscriptions::messages.plans.columns.currency'))
-                            ->required(),
                         Forms\Components\Toggle::make('is_active')
                             ->label(trans('filament-subscriptions::messages.plans.columns.is_active')),
                     ])->columns(2)
@@ -106,9 +120,11 @@ class PlanResource extends Resource
                     ->label(trans('filament-subscriptions::messages.plans.columns.price'))
                     ->sortable()
                     ->searchable()
-                    ->money(locale: 'en', currency: setting('site_currency'))
+                    ->money(locale: 'en', currency: function ($record){
+                        return $record->currency;
+                    })
                     ->sortable(),
-                Tables\Columns\BooleanColumn::make('is_active')
+                Tables\Columns\ToggleColumn::make('is_active')
                     ->label(trans('filament-subscriptions::messages.plans.columns.is_active')),
             ])
             ->defaultSort('sort_order', 'aces')

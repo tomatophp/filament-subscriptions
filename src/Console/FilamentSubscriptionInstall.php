@@ -37,9 +37,6 @@ class FilamentSubscriptionInstall extends Command
     public function handle()
     {
         $this->info('Publish Vendor Assets');
-        $this->callSilent('optimize:clear');
-        $this->yarnCommand(['install']);
-        $this->yarnCommand(['build']);
         $this->artisanCommand(["migrate"]);
         $this->artisanCommand(["optimize:clear"]);
         $this->info('Filament Subscription installed successfully.');

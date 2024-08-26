@@ -1,6 +1,6 @@
 <?php
 
-namespace TomatoPHP\FilamentSubscriptions\Providers;
+namespace TomatoPHP\FilamentSubscriptions;
 
 use TomatoPHP\FilamentSubscriptions\Http\Middleware\VerifyBillableIsSubscribed;
 use Closure;
@@ -15,7 +15,7 @@ class FilamentSubscriptionsProvider implements Provider
     public function getRouteAction(): string | Closure | array
     {
         return function (): RedirectResponse {
-            return redirect()->route('subscription.portal');
+            return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.pages.billing');
         };
     }
 

@@ -36,6 +36,7 @@
         "php": "^8.0.2",
         "filament/filament": "^3.0.0",
         "laravelcm/laravel-subscriptions": "^1.3",
+        "tomatophp/filament-locations": "^1.0",
         "tomatophp/console-helpers": "^1.1"
     }
 }

@@ -65,8 +65,9 @@ return [
             ],
         ],
         "columns" => [
+            "active" => "Active",
             "subscriber" => "Subscriber",
-            "paln" => "Paln",
+            "plan" => "Plan",
             "trial_ends_at" => "Trial Ends At",
             "starts_at" => "Starts At",
             "ends_at" => "Ends At",
@@ -113,7 +114,7 @@ return [
         ],
         "cancel" => [
             "title" => "Success",
-            "message" => "Your subscription(s) have been successfully canceled."
+            "message" => "Your subscription(s) have been successfully canceled you will be."
         ],
         "cancel_invalid" => [
             "title" => "Invalid",
@@ -132,9 +133,11 @@ return [
         'renew_subscription' => 'Renew Subscription',
         'change_subscription' => 'Change Subscription',
         'cancel_subscription' => 'Cancel Subscription',
+        'resubscribe' => 'Resubscribe',
         'cancel_subscription_info' => 'You may cancel your subscription at any time. Once your subscription has been cancelled, you will have the option to use the subscription until the end of the current billing cycle.',
         'no_plans_available' => 'No plans available',
-        'return_to' => 'Return to',
+        'return_to' => 'Return to Dashboard',
         'it_looks_like_no_active_subscription' => 'It looks like you do not have an active subscription. You may choose one of the subscription plans below to get started. Subscription plans may be changed or cancelled at your convenience.',
-    ]
+    ],
+    "menu" => "Manage Subscriptions"
 ];

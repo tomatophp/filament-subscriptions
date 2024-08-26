@@ -78,6 +78,8 @@ class Feature extends Model implements Sortable
         'resettable_interval' => 'string',
         'sort_order' => 'integer',
         'deleted_at' => 'datetime',
+        'name' => 'json',
+        'description' => 'json',
     ];
 
     /**

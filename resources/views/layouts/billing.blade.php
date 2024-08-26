@@ -1,26 +1,33 @@
-<!DOCTYPE html>
+@php
+    use Filament\Support\Enums\MaxWidth;
+@endphp
 
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<x-filament-panels::layout.base :livewire="$livewire">
+    @props([
+        'after' => null,
+        'heading' => null,
+        'subheading' => null,
+    ])
 
-<head>
-    <meta charset="UTF-8" />
-    <title>{{ trans('filament-payments::messages.view.title_pay_page') }}</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <div class="fi-simple-layout flex min-h-screen flex-col items-center">
+        @if (($hasTopbar ?? true) && filament()->auth()->check())
+            <div
+                class="absolute end-0 top-0 flex h-16 items-center gap-x-4 pe-4 md:pe-6 lg:pe-8"
+            >
+                @if (filament()->hasDatabaseNotifications())
+                    @livewire(Filament\Livewire\DatabaseNotifications::class, ['lazy' => true])
+                @endif
 
-    @filamentStyles
+                <x-filament-panels::user-menu />
+            </div>
+        @endif
 
-    <script src="https://unpkg.com/akar-icons-fonts"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+        <div
+            class="fi-simple-main-ctn"
+        >
+            {{ $slot }}
+        </div>
 
-<body class="bg-teal-50 antialiased">
-    {{-- Content --}}
-    @yield('content')
-
-    @livewire('notifications')
-
-    @filamentScripts
-</body>
-
-</html>
+        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $livewire->getRenderHookScopes()) }}
+    </div>
+</x-filament-panels::layout.base>

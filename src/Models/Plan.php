@@ -154,12 +154,12 @@ class Plan extends Model implements Sortable
 
     public function features(): HasMany
     {
-        return $this->hasMany(config('laravel-subscriptions.models.feature'));
+        return $this->hasMany(Feature::class);
     }
 
     public function subscriptions(): HasMany
     {
-        return $this->hasMany(config('laravel-subscriptions.models.subscription'));
+        return $this->hasMany(Subscription::class);
     }
 
     public function isFree(): bool

@@ -14,7 +14,14 @@ Manage subscriptions and feature access with customizable plans in FilamentPHP
 ```bash
 composer require tomatophp/filament-subscriptions
 ```
-after install your package please run this command
+
+now you need to publish your migrations
+
+```bash
+php artisan vendor:publish --provider="Laravelcm\Subscriptions\SubscriptionServiceProvider"
+```
+
+after that please run this command
 
 ```bash
 php artisan filament-subscriptions:install
@@ -24,6 +31,22 @@ finally register the plugin on `/app/Providers/Filament/AdminPanelProvider.php`
 
 ```php
 ->plugin(\TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsPlugin::make())
+```
+
+## Using 
+
+now on your User.php model or any auth model you like you need to add this trait
+
+```php
+namespace App\Models;
+
+use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasPlanSubscriptions;
+}
 ```
 
 ## Configuration

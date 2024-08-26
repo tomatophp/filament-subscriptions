@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Laravelcm\Subscriptions\Interval;
+use TomatoPHP\FilamentSubscriptions\Models\Feature;
 use TomatoPHP\FilamentTranslationComponent\Components\Translation;
 
 class FeatureManager extends RelationManager
@@ -51,22 +53,28 @@ class FeatureManager extends RelationManager
             ->schema([
                 Translation::make('name')
                     ->label(trans('filament-subscriptions::messages.features.columns.name'))
+                    ->columnSpanFull()
                     ->required(),
                 Translation::make('description')
+                    ->columnSpanFull()
                     ->label(trans('filament-subscriptions::messages.features.columns.description')),
                 Forms\Components\TextInput::make('value')
+                    ->columnSpanFull()
+                    ->default(0)
                     ->label(trans('filament-subscriptions::messages.features.columns.value'))
                     ->required(),
                 Forms\Components\Select::make('resettable_interval')
+                    ->default(Interval::DAY->value)
                     ->label(trans('filament-subscriptions::messages.features.columns.resettable_interval'))
                     ->options([
-                        'day' => trans('filament-subscriptions::messages.features.columns.day'),
-                        'month' => trans('filament-subscriptions::messages.features.columns.month'),
-                        'year' => trans('filament-subscriptions::messages.features.columns.year'),
+                        Interval::DAY->value => trans('filament-subscriptions::messages.features.columns.day'),
+                        Interval::MONTH->value => trans('filament-subscriptions::messages.features.columns.month'),
+                        Interval::YEAR->value => trans('filament-subscriptions::messages.features.columns.year'),
                     ])->required(),
                 Forms\Components\TextInput::make('resettable_period')
                     ->label(trans('filament-subscriptions::messages.features.columns.resettable_period'))
                     ->required()
+                    ->default(0)
                     ->numeric(),
             ]);
     }
