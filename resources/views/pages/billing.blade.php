@@ -22,13 +22,13 @@
             <div class="mt-6">
                 {{ trans('filament-subscriptions::messages.view.our_billing_management') }}
             </div>
-            <x-filament::link href="{{ url(filament()->getDefaultPanel()->getId()) }}" class="mt-6" >
+            <x-filament::link href="{{ url(filament()->getCurrentPanel()->getId()) }}" class="mt-6" >
                 {{ trans('filament-subscriptions::messages.view.return_to') }}
             </x-filament::link>
         </div>
     </div>
     <div class="w-full lg:flex-1 bg-gray-100 dark:bg-gray-800 h-full overflow-y-auto">
-        <a href="{{ url(filament()->getDefaultPanel()->getId()) }}" id="topNavReturnLink" class="lg:hidden flex items-center w-full px-4 py-4 bg-white shadow-lg">
+        <a href="{{ url(filament()->getCurrentPanel()->getId()) }}" id="topNavReturnLink" class="lg:hidden flex items-center w-full px-4 py-4 bg-white shadow-lg">
             <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-left w-4 h-4 text-gray-400">
                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
             </svg>
@@ -113,7 +113,7 @@
 
 
             {{-- Cancel Subscription --}}
-            @if ($currentSubscription->active())
+            @if ($currentSubscription && $currentSubscription->active())
                 <x-filament::section :heading="trans('filament-subscriptions::messages.view.cancel_subscription')">
                     <div class="max-w-xl text-sm text-gray-600">
                         {{ trans('filament-subscriptions::messages.view.cancel_subscription_info') }}

@@ -4,6 +4,7 @@ namespace TomatoPHP\FilamentSubscriptions\Console;
 
 use Illuminate\Console\Command;
 use TomatoPHP\ConsoleHelpers\Traits\RunCommand;
+use TomatoPHP\FilamentSubscriptions\Models\Plan;
 
 class FilamentSubscriptionInstall extends Command
 {
@@ -36,7 +37,21 @@ class FilamentSubscriptionInstall extends Command
      */
     public function handle()
     {
+
         $this->info('Publish Vendor Assets');
+
+        $plans = Plan::query()->where('slug', 'main')->first();
+        if(!$plans){
+            $plans = new Plan();
+            $mainPlan->name = 'Main';
+            $mainPlan->slug = 'main';
+            $mainPlan->price = 0;
+            $mainPlan->currency = 'USD';
+            $mainPlan->is_active = true;
+            $mainPlan->trial_period = 1264;
+            $mainPlan->trial_interval = 'year';
+            $plans->save();
+        }
         $this->artisanCommand(["migrate"]);
         $this->artisanCommand(["optimize:clear"]);
         $this->info('Filament Subscription installed successfully.');

@@ -4,6 +4,7 @@ namespace TomatoPHP\FilamentSubscriptions;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use TomatoPHP\FilamentSubscriptions\Services\FilamentSubscriptionServices;
 
 class FilamentSubscriptionsServiceProvider extends ServiceProvider
 {
@@ -44,13 +45,12 @@ class FilamentSubscriptionsServiceProvider extends ServiceProvider
       $this->publishes([
          __DIR__ . '/../resources/lang' => base_path('lang/vendor/filament-subscriptions'),
       ], 'filament-subscriptions-lang');
-
-      //Register Routes
-      $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
    }
 
    public function boot(): void
    {
-      //you boot methods here
+      $this->app->bind('filament-subscriptions', function () {
+         return new FilamentSubscriptionServices();
+      });
    }
 }

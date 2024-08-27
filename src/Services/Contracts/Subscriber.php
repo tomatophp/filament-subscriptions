@@ -2,7 +2,7 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Services\Contracts;
 
-class SubscriptionSubscriber
+class Subscriber
 {
     /**
      * @var string

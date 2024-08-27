@@ -15,7 +15,12 @@ class FilamentSubscriptionsProvider implements Provider
     public function getRouteAction(): string | Closure | array
     {
         return function (): RedirectResponse {
-            return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.pages.billing');
+            if(filament()->getTenant()){
+                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing', ['tenant'=> filament()->getTenant()->id]);
+            }
+            else {
+                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing');
+            }
         };
     }
 

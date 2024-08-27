@@ -13,6 +13,7 @@ use Filament\Panel;
 class FilamentSubscriptionsPlugin implements Plugin
 {
     public bool $showUserMenu = true;
+    public bool $withoutResources = false;
 
     public function getId(): string
     {
@@ -25,30 +26,40 @@ class FilamentSubscriptionsPlugin implements Plugin
         return $this;
     }
 
+    public function withoutResources(bool $withoutResources = true):static
+    {
+        $this->withoutResources = $withoutResources;
+        return $this;
+    }
+
     public function register(Panel $panel): void
     {
         $panel
             ->pages([
                 Billing::class
-            ])
-            ->resources([
-                PlanResource::class,
-                SubscriptionResource::class,
             ]);
 
-        if($this->showUserMenu){
-            $panel->userMenuItems([
-                MenuItem::make()
-                    ->label('Manage Subscriptions')
-                    ->icon('heroicon-s-banknotes')
-                    ->url(url(config('filament-subscriptions.route')))
-            ]);
+        if(!$this->withoutResources){
+            $panel
+                ->resources([
+                    PlanResource::class,
+                    SubscriptionResource::class,
+                ]);
         }
+
+
     }
 
     public function boot(Panel $panel): void
     {
-        //
+        if($this->showUserMenu && !filament()->hasTenancy()){
+            $panel->userMenuItems([
+                MenuItem::make()
+                    ->label('Manage Subscriptions')
+                    ->icon('heroicon-s-credit-card')
+                    ->url(route('filament.' . $panel->getId() . '.tenant.billing'))
+            ]);
+        }
     }
 
     public static function make(): static

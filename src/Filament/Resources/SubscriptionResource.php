@@ -8,7 +8,7 @@ use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource\Page
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource\RelationManagers;
 use App\Models\User;
 use TomatoPHP\FilamentSubscriptions\Models\Plan;
-use TomatoPHP\FilamentSubscriptions\Services\FilamentSubscriptionSubscribers;
+use TomatoPHP\FilamentSubscriptions\Facades\FilamentSubscriptions;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -54,7 +54,7 @@ class SubscriptionResource extends Resource
                 Forms\Components\Hidden::make('name'),
                 Forms\Components\Select::make('subscriber_type')
                     ->label(trans('filament-subscriptions::messages.subscriptions.sections.subscriber.columns.subscriber_type'))
-                    ->options(count(FilamentSubscriptionSubscribers::getOptions()) ? FilamentSubscriptionSubscribers::getOptions()->pluck('name', 'model')->toArray() : [User::class => 'Users'])
+                    ->options(count(FilamentSubscriptions::getOptions()) ? FilamentSubscriptions::getOptions()->pluck('name', 'model')->toArray() : [User::class => 'Users'])
                     ->afterStateUpdated(fn(Forms\Get $get, Forms\Set $set) => $set('subscriber_id', null))
                     ->preload()
                     ->live()
