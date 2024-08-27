@@ -8,6 +8,8 @@
 
 Manage subscriptions and feature access with customizable plans in FilamentPHP
 
+thanks for [Laravel Subscriptions](https://github.com/laravelcm/laravel-subscriptions) you can review it before use this package.
+
 ## Screenshots
 
 ![Tenant Menu](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/tenant-menu.png)
