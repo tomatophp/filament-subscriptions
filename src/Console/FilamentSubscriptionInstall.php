@@ -43,13 +43,13 @@ class FilamentSubscriptionInstall extends Command
         $plans = Plan::query()->where('slug', 'main')->first();
         if(!$plans){
             $plans = new Plan();
-            $mainPlan->name = 'Main';
-            $mainPlan->slug = 'main';
-            $mainPlan->price = 0;
-            $mainPlan->currency = 'USD';
-            $mainPlan->is_active = true;
-            $mainPlan->trial_period = 1264;
-            $mainPlan->trial_interval = 'year';
+            $plans->name = 'Main';
+            $plans->slug = 'main';
+            $plans->price = 0;
+            $plans->currency = 'USD';
+            $plans->is_active = true;
+            $plans->trial_period = 1264;
+            $plans->trial_interval = 'year';
             $plans->save();
         }
         $this->artisanCommand(["migrate"]);
