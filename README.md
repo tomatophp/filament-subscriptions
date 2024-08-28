@@ -45,6 +45,12 @@ thanks for [Laravel Subscriptions](https://github.com/laravelcm/laravel-subscrip
 composer require tomatophp/filament-subscriptions
 ```
 
+we need the Media Library plugin to be installed and migrated you can use this command to publish the migration
+
+```bash
+php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"
+```
+
 now you need to publish your migrations
 
 ```bash
