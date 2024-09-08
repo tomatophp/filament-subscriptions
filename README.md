@@ -89,12 +89,16 @@ To configure the billing provider for your application, use the `FilamentSubscri
 
 ```php
 use TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsProvider;
+use TomatoPHP\FilamentSubscriptions\Filament\Pages\Billing;
 use Filament\Panel;
 
 public function panel(Panel $panel): Panel
 {
     return $panel
         // ...
+        ->pages([
+            Billing::class
+        ])
         ->tenantBillingProvider(new FilamentSubscriptionsProvider());
 }
 ```

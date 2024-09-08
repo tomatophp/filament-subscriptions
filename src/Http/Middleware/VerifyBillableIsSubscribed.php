@@ -19,7 +19,7 @@ class VerifyBillableIsSubscribed
 
         if ($user && $user->activePlanSubscriptions()->isEmpty()) {
             if(filament()->getTenant()){
-                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing', ['tenant'=> filament()->getTenant()->id]);
+                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing', ['tenant'=> filament()->getTenant()->{filament()->getCurrentPanel()->getTenantSlugAttribute()}]);
             }
             else {
                 return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing');
