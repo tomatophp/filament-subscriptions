@@ -88,7 +88,7 @@ class User extends Authenticatable
 To configure the billing provider for your application, use the `FilamentSubscriptionsProvider`:
 
 ```php
-use TomatoPHP\FilamentSubscriptions\Providers\FilamentSubscriptionsProvider;
+use TomatoPHP\FilamentSubscriptions\FilamentSubscriptionsProvider;
 use Filament\Panel;
 
 public function panel(Panel $panel): Panel
