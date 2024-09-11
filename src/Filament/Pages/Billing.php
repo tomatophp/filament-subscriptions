@@ -11,7 +11,6 @@ use Filament\Pages\Page;
 use Filament\Pages\SimplePage;
 use Filament\Pages\Concerns;
 use Filament\Panel;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -27,7 +26,6 @@ use function Pest\Laravel\call;
 
 class Billing extends Page implements HasActions
 {
-    use Concerns\HasMaxWidth;
     use Concerns\HasTopbar;
     use InteractsWithActions;
 
@@ -54,18 +52,12 @@ class Billing extends Page implements HasActions
     {
         return [
             'hasTopbar' => $this->hasTopbar(),
-            'maxWidth' => $this->getMaxWidth(),
         ];
     }
 
     public function hasLogo(): bool
     {
         return true;
-    }
-
-    public function getMaxWidth(): MaxWidth | string | null
-    {
-        return MaxWidth::FiveExtraLarge;
     }
 
     protected static ?string $title = 'Billing';
