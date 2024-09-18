@@ -3,6 +3,7 @@
 namespace TomatoPHP\FilamentSubscriptions;
 
 use Filament\Navigation\MenuItem;
+use Nwidart\Modules\Module;
 use TomatoPHP\FilamentSubscriptions\Filament\Pages\Billing;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
 use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource;
@@ -14,6 +15,7 @@ class FilamentSubscriptionsPlugin implements Plugin
 {
     public bool $showUserMenu = true;
     public bool $withoutResources = false;
+    private bool $isActive = false;
 
     public function getId(): string
     {
@@ -34,17 +36,26 @@ class FilamentSubscriptionsPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        $panel
-            ->pages([
-                Billing::class
-            ]);
+        if(class_exists(Module::class) && \Nwidart\Modules\Facades\Module::find('FilamentSubscriptions')?->isEnabled()){
+            $this->isActive = true;
+        }
+        else {
+            $this->isActive = true;
+        }
 
-        if(!$this->withoutResources){
+        if($this->isActive) {
             $panel
-                ->resources([
-                    PlanResource::class,
-                    SubscriptionResource::class,
+                ->pages([
+                    Billing::class
                 ]);
+
+            if (!$this->withoutResources) {
+                $panel
+                    ->resources([
+                        PlanResource::class,
+                        SubscriptionResource::class,
+                    ]);
+            }
         }
 
 
@@ -52,13 +63,15 @@ class FilamentSubscriptionsPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        if($this->showUserMenu && !filament()->hasTenancy()){
-            $panel->userMenuItems([
-                MenuItem::make()
-                    ->label('Manage Subscriptions')
-                    ->icon('heroicon-s-credit-card')
-                    ->url(route('filament.' . $panel->getId() . '.tenant.billing'))
-            ]);
+        if($this->isActive) {
+            if ($this->showUserMenu && !filament()->hasTenancy()) {
+                $panel->userMenuItems([
+                    MenuItem::make()
+                        ->label('Manage Subscriptions')
+                        ->icon('heroicon-s-credit-card')
+                        ->url(route('filament.' . $panel->getId() . '.tenant.billing'))
+                ]);
+            }
         }
     }
 

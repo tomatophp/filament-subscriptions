@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "group" => "الاشتراك",
+    "group" => "المدفوعات",
     "plans" => [
         "title" => "الخطط",
         "columns" => [

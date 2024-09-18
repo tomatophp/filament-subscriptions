@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "group" => "Subscription",
+    "group" => "Payments",
     "plans" => [
         "title" => "Plans",
         "columns" => [

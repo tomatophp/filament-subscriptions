@@ -1,0 +1,29 @@
+{
+    "name": "FilamentSubscriptions",
+    "alias": "filament-subscriptions",
+    "description": {
+        "ar": "قم بإدارة مدفوعاتك داخل تطبيق FilamentPHP مع تكامل بوابة الدفع المتعددة",
+        "en": "Manage subscriptions and feature access with customizable plans in FilamentPHP",
+        "gr": "Manage subscriptions and feature access with customizable plans in FilamentPHP",
+        "sp": "Manage subscriptions and feature access with customizable plans in FilamentPHP"
+    },
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "TomatoPHP\\FilamentSubscriptions\\FilamentSubscriptionsServiceProvider"
+    ],
+    "files": [],
+    "title": {
+        "ar": "الاشتراكات",
+        "en": "Subscriptions",
+        "gr": "Subscriptions",
+        "sp": "Subscriptions"
+    },
+    "color": "#cc1448",
+    "icon": "heroicon-c-credit-card",
+    "placeholder": "https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/3x1io-tomato-subscriptions.jpg",
+    "type": "plugin",
+    "version": "v1.0.7",
+    "github" : "https://github.com/tomatophp/filament-subscriptions",
+    "docs" : "https://github.com/tomatophp/filament-subscriptions"
+}
