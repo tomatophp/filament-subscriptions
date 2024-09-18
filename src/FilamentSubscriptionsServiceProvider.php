@@ -45,12 +45,14 @@ class FilamentSubscriptionsServiceProvider extends ServiceProvider
       $this->publishes([
          __DIR__ . '/../resources/lang' => base_path('lang/vendor/filament-subscriptions'),
       ], 'filament-subscriptions-lang');
+
+       $this->app->bind('filament-subscriptions', function () {
+           return new FilamentSubscriptionServices();
+       });
    }
 
    public function boot(): void
    {
-      $this->app->bind('filament-subscriptions', function () {
-         return new FilamentSubscriptionServices();
-      });
+
    }
 }
