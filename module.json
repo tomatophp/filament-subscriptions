@@ -2,7 +2,7 @@
     "name": "FilamentSubscriptions",
     "alias": "filament-subscriptions",
     "description": {
-        "ar": "قم بإدارة مدفوعاتك داخل تطبيق FilamentPHP مع تكامل بوابة الدفع المتعددة",
+        "ar": "قم بإدارة الاشتراكات والوصول إلى الميزات مع خطط قابلة للتخصيص في FilamentPHP",
         "en": "Manage subscriptions and feature access with customizable plans in FilamentPHP",
         "gr": "Manage subscriptions and feature access with customizable plans in FilamentPHP",
         "sp": "Manage subscriptions and feature access with customizable plans in FilamentPHP"
