@@ -67,7 +67,7 @@ class FilamentSubscriptionsPlugin implements Plugin
             if ($this->showUserMenu && !filament()->hasTenancy()) {
                 $panel->userMenuItems([
                     MenuItem::make()
-                        ->label('Manage Subscriptions')
+                        ->label(trans('filament-subscriptions::messages.menu'))
                         ->icon('heroicon-s-credit-card')
                         ->url(route('filament.' . $panel->getId() . '.tenant.billing'))
                 ]);
