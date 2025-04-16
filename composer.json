@@ -37,7 +37,7 @@
         "filament/spatie-laravel-media-library-plugin": "^3.0",
         "laravelcm/laravel-subscriptions": "^1.3",
         "tomatophp/console-helpers": "^1.1",
-        "tomatophp/filament-locations": "^1.0",
+        "tomatophp/filament-locations": "^2.0",
         "tomatophp/filament-translation-component": "^1.0"
     }
 }

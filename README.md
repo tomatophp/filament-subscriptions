@@ -125,7 +125,7 @@ Users without an active subscription will be redirected to the billing page.
 
 ## Register New Subscriber Type
 
-you can register new subscriber type by using this code
+You can register new subscriber type by using this code
 
 ```php
 use TomatoPHP\FilamentSubscriptions\Facades\FilamentSubscriptions;
@@ -138,6 +138,16 @@ public function boot()
             ->model(\App\Models\User::class)
     );
 }
+```
+
+## Use custom Billing page
+
+You can create your own billing class and register it in `config/laravel-subscriptions.php`
+
+```php
+ 'pages' => [
+        'billing' => Billing::class,
+    ]
 ```
 
 ## Use Events

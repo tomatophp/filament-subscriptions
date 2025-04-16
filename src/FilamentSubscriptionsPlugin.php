@@ -28,7 +28,7 @@ class FilamentSubscriptionsPlugin implements Plugin
         return $this;
     }
 
-    public function withoutResources(bool $withoutResources = true):static
+    public function withoutResources(bool $withoutResources = true): static
     {
         $this->withoutResources = $withoutResources;
         return $this;
@@ -36,40 +36,42 @@ class FilamentSubscriptionsPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        if(class_exists(Module::class) && \Nwidart\Modules\Facades\Module::find('FilamentSubscriptions')?->isEnabled()){
+        if (class_exists(Module::class) && \Nwidart\Modules\Facades\Module::find('FilamentSubscriptions')?->isEnabled()) {
             $this->isActive = true;
-        }
-        else {
+        } else {
             $this->isActive = true;
         }
 
-        if($this->isActive) {
+        if ($this->isActive) {
             $panel
                 ->pages([
-                    Billing::class
+                    config('filament-subscriptions.pages.billing', Billing::class)
                 ]);
 
             if (!$this->withoutResources) {
                 $panel
                     ->resources([
-                        PlanResource::class,
-                        SubscriptionResource::class,
+                        config('filament-subscriptions.resources.plan', PlanResource::class),
+                        config('filament-subscriptions.resources.subscription', SubscriptionResource::class),
                     ]);
             }
         }
-
-
     }
 
     public function boot(Panel $panel): void
     {
-        if($this->isActive) {
+        if ($this->isActive) {
             if ($this->showUserMenu && !filament()->hasTenancy()) {
                 $panel->userMenuItems([
                     MenuItem::make()
                         ->label(trans('filament-subscriptions::messages.menu'))
                         ->icon('heroicon-s-credit-card')
-                        ->url(route('filament.' . $panel->getId() . '.tenant.billing'))
+                        ->url(
+                            route(
+                                'filament.' . $panel->getId() . '.tenant.billing',
+                                // ['tenant'=> filament()->getTenant()->{filament()->getCurrentPanel()->getTenantSlugAttribute()}]
+                            )
+                        )
                 ]);
             }
         }

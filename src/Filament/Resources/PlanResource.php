@@ -18,15 +18,18 @@ use TomatoPHP\FilamentTranslationComponent\Components\Translation;
 
 class PlanResource extends Resource
 {
-    protected static ?string $model = Plan::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-bookmark';
 
     protected static ?int $navigationSort = 1;
 
+    public static function getModel(): string
+    {
+        return config('laravel-subscriptions.models.plan', Plan::class);
+    }
+
     public static function getNavigationGroup(): ?string
     {
-        return trans('filament-subscriptions::messages.group');
+        return config('laravel-subscriptions.navigation.group', trans('filament-subscriptions::messages.group'));
     }
 
     public static function getNavigationLabel(): string

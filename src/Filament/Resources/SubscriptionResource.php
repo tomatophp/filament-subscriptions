@@ -21,15 +21,18 @@ use TomatoPHP\FilamentSubscriptions\Models\Subscription;
 
 class SubscriptionResource extends Resource
 {
-    protected static ?string $model = Subscription::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
     protected static ?int $navigationSort = 2;
 
+    public static function getModel(): string
+    {
+        return config('laravel-subscriptions.models.subscription', Subscription::class);
+    }
+
     public static function getNavigationGroup(): ?string
     {
-        return trans('filament-subscriptions::messages.group');
+        return config('laravel-subscriptions.navigation.group', trans('filament-subscriptions::messages.group'));
     }
 
     public static function getNavigationLabel(): string
