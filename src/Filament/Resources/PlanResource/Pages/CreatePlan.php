@@ -2,9 +2,8 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages;
 
-use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
 
 class CreatePlan extends CreateRecord
 {

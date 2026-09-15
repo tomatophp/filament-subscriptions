@@ -11,18 +11,17 @@ class VerifyBillableIsSubscribed
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request):Response  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
         if ($user && $user->activePlanSubscriptions()->isEmpty()) {
-            if(filament()->getTenant()){
-                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing', ['tenant'=> filament()->getTenant()->{filament()->getCurrentPanel()->getTenantSlugAttribute()}]);
-            }
-            else {
-                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing');
+            if (filament()->getTenant()) {
+                return redirect()->route('filament.'.filament()->getCurrentOrDefaultPanel()->getId().'.tenant.billing', ['tenant' => filament()->getTenant()->{filament()->getCurrentOrDefaultPanel()->getTenantSlugAttribute()}]);
+            } else {
+                return redirect()->route('filament.'.filament()->getCurrentOrDefaultPanel()->getId().'.tenant.billing');
             }
         }
 

@@ -2,37 +2,40 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Services;
 
+use Closure;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Collection;
 use TomatoPHP\FilamentSubscriptions\Services\Contracts\Subscriber;
-use Illuminate\Support\Str;
-use TomatoPHP\FilamentSubscriptions\Models\Plan;
-use TomatoPHP\FilamentSubscriptions\Models\Subscription;
 
 class FilamentSubscriptionServices
 {
     public static array $authorTypes = [];
 
-    public \Closure $afterSubscription;
-    public \Closure $afterRenew;
-    public \Closure $afterCanceling;
-    public \Closure $afterChange;
+    public Closure $afterSubscription;
+
+    public Closure $afterRenew;
+
+    public Closure $afterCanceling;
+
+    public Closure $afterChange;
 
     private string $currentPanel;
 
     public function __construct()
     {
-        $this->currentPanel = Filament::getCurrentPanel()->getId();
-        $this->afterSubscription = function(array $data) {
+        // Redirect to the panel URL, not its id: the id is not a path when the panel uses a custom path.
+        $this->currentPanel = Filament::getCurrentOrDefaultPanel()->getUrl();
+        $this->afterSubscription = function (array $data) {
             Notification::make()
                 ->title(trans('filament-subscriptions::messages.notifications.subscription.title'))
                 ->body(trans('filament-subscriptions::messages.notifications.subscription.message'))
                 ->success()
                 ->send();
+
             return redirect()->to($this->currentPanel);
         };
-        $this->afterRenew = function(array $data) {
+        $this->afterRenew = function (array $data) {
             Notification::make()
                 ->title(trans('filament-subscriptions::messages.notifications.renew.title'))
                 ->body(trans('filament-subscriptions::messages.notifications.renew.message'))
@@ -41,71 +44,74 @@ class FilamentSubscriptionServices
 
             return redirect()->to($this->currentPanel);
         };
-        $this->afterCanceling = function(array $data) {
+        $this->afterCanceling = function (array $data) {
             Notification::make()
                 ->title(trans('filament-subscriptions::messages.notifications.cancel.title'))
                 ->body(trans('filament-subscriptions::messages.notifications.cancel.message'))
                 ->success()
                 ->send();
+
             return redirect()->to($this->currentPanel);
         };
-        $this->afterChange = function(array $data) {
+        $this->afterChange = function (array $data) {
             Notification::make()
                 ->title(trans('filament-subscriptions::messages.notifications.change.title'))
                 ->body(trans('filament-subscriptions::messages.notifications.change.message'))
                 ->success()
                 ->send();
+
             return redirect()->to($this->currentPanel);
         };
     }
 
-    public function getAfterRenew(): \Closure
+    public function getAfterRenew(): Closure
     {
         return $this->afterRenew;
     }
 
-    public function getAfterSubscription(): \Closure
+    public function getAfterSubscription(): Closure
     {
         return $this->afterSubscription;
     }
 
-    public function getAfterCanceling(): \Closure
+    public function getAfterCanceling(): Closure
     {
         return $this->afterCanceling;
     }
 
-    public function getAfterChange(): \Closure
+    public function getAfterChange(): Closure
     {
         return $this->afterChange;
     }
 
     public static function register(Subscriber|array $author)
     {
-        if(is_array($author)) {
-            foreach($author as $type) {
+        if (is_array($author)) {
+            foreach ($author as $type) {
                 self::register($type);
             }
+
             return;
         }
         self::$authorTypes[] = $author;
     }
 
-    public function afterSubscription(\Closure $afterSubscription): void
+    public function afterSubscription(Closure $afterSubscription): void
     {
         $this->afterSubscription = $afterSubscription;
     }
 
-    public function afterRenew(\Closure $afterRenew): void
+    public function afterRenew(Closure $afterRenew): void
     {
         $this->afterRenew = $afterRenew;
     }
 
-    public function afterCanceling(\Closure $afterCanceling): void
+    public function afterCanceling(Closure $afterCanceling): void
     {
         $this->afterCanceling = $afterCanceling;
     }
 
-    public function afterChange(\Closure $afterChange): void
+    public function afterChange(Closure $afterChange): void
     {
         $this->afterChange = $afterChange;
     }

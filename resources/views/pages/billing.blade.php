@@ -1,131 +1,116 @@
-<div style="margin-top: 70px;" class="h-screen flex flex-col md:flex-row md:justify-between border-t border-gray-200 dark:border-gray-700">
-    <div class="px-6 py-12 dark:bg-gray-950 dark:text-white shadow-sm h-screen">
+{{-- Plain CSS scoped to this page: Filament 5 panels do not ship arbitrary Tailwind utility classes. --}}
+<div class="fi-subscriptions-billing">
+    <style>
+        .fi-subscriptions-billing { display: grid; grid-template-columns: minmax(0, 18rem) minmax(0, 1fr); gap: 2rem; width: 100%; max-width: 76rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+        @media (max-width: 64rem) { .fi-subscriptions-billing { grid-template-columns: minmax(0, 1fr); } }
+        .fi-subscriptions-billing-aside { display: flex; flex-direction: column; gap: .75rem; }
+        .fi-subscriptions-billing-brand { display: flex; align-items: center; gap: .75rem; font-size: 1.5rem; font-weight: 700; }
+        .fi-subscriptions-billing-title { font-size: 1.125rem; font-weight: 600; }
+        .fi-subscriptions-billing-muted { color: var(--gray-500); font-size: .875rem; line-height: 1.5; }
+        .fi-subscriptions-billing-main { display: flex; flex-direction: column; gap: 1.5rem; }
+        .fi-subscriptions-billing-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1rem; }
+        .fi-subscriptions-billing-price { font-size: 1.875rem; font-weight: 700; }
+        .fi-subscriptions-billing-features { display: flex; flex-direction: column; gap: .5rem; margin-top: 1.25rem; font-size: .875rem; }
+        .fi-subscriptions-billing-feature { display: flex; align-items: center; gap: .5rem; }
+        .fi-subscriptions-billing-notice { padding: 1rem; margin-bottom: 1rem; border-radius: .5rem; background: var(--gray-100); color: var(--gray-700); font-size: .875rem; }
+        .dark .fi-subscriptions-billing-notice { background: var(--gray-800); color: var(--gray-300); }
+    </style>
+
+    <aside class="fi-subscriptions-billing-aside">
+        <div class="fi-subscriptions-billing-brand">
+            <x-filament-panels::logo />
+        </div>
+        <div class="fi-subscriptions-billing-title">
+            {{ trans('filament-subscriptions::messages.view.billing_management') }}
+        </div>
+        <div class="fi-subscriptions-billing-muted">
+            {{ trans('filament-subscriptions::messages.view.signed_in_as') }} {{ $user->name }}.
+            {{ trans('filament-subscriptions::messages.view.managing_billing_for') }} {{ $user->name }}.
+        </div>
+        <div class="fi-subscriptions-billing-muted">
+            {{ trans('filament-subscriptions::messages.view.our_billing_management') }}
+        </div>
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">
-                <x-filament-panels::logo  />
-                {{ env('APP_NAME', 'Laravel') }}
-            </h1>
-            <h2 class="text-lg font-semibold">
-                {{ trans('filament-subscriptions::messages.view.billing_management') }}
-            </h2>
-            <div class="flex items-center mt-6 gap-2">
-                <div>
-                    {{ trans('filament-subscriptions::messages.view.signed_in_as') }}
-                </div>
-                <div>
-                    {{ $user->name }}.
-                </div>
-            </div>
-            <div class="text-sm">
-                {{ trans('filament-subscriptions::messages.view.managing_billing_for') }} {{ $user->name }}.
-            </div>
-            <div class="mt-6">
-                {{ trans('filament-subscriptions::messages.view.our_billing_management') }}
-            </div>
-            <x-filament::link href="{{ url(filament()->getCurrentPanel()->getUrl()) }}" class="mt-6" >
+            <x-filament::link
+                :href="filament()->getCurrentOrDefaultPanel()->getUrl()"
+                icon="heroicon-m-arrow-left"
+            >
                 {{ trans('filament-subscriptions::messages.view.return_to') }}
             </x-filament::link>
         </div>
-    </div>
-    <div class="w-full lg:flex-1 bg-gray-100 dark:bg-gray-800 h-full overflow-y-auto">
-        <a href="{{ url(filament()->getCurrentPanel()->getUrl()) }}" id="topNavReturnLink" class="lg:hidden flex items-center w-full px-4 py-4 bg-white shadow-lg">
-            <svg viewBox="0 0 20 20" fill="currentColor" class="arrow-left w-4 h-4 text-gray-400">
-                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
-            </svg>
-            <div class="ml-2 text-gray-600 underline">
-                {{ trans('filament-subscriptions::messages.view.return_to') }} {{ filament()->getBrandName() }}
-            </div>
-        </a>
+    </aside>
 
-        <div class="px-4 my-4 flex flex-col gap-4 ">
+    <div class="fi-subscriptions-billing-main">
+        <x-filament::section :heading="trans('filament-subscriptions::messages.view.subscribe')">
+            @if (! $user->subscribedPlans()->first())
+                <div class="fi-subscriptions-billing-notice">
+                    {{ trans('filament-subscriptions::messages.view.it_looks_like_no_active_subscription') }}
+                </div>
+            @endif
 
-            <x-filament::section
-                :heading="trans('filament-subscriptions::messages.view.subscribe')"
-            >
-                @if (!$user->subscribedPlans()->first())
-                    <div class="my-4">
+            <div class="fi-subscriptions-billing-plans">
+                @forelse ($plans as $plan)
+                    <x-filament::section
+                        :heading="$plan->name"
+                        :description="$plan->description"
+                    >
                         <div>
-                            <div class="px-6 py-4 bg-gray-200 border border-gray-300 sm:rounded-lg shadow-sm mb-6">
-                                <div class="max-w-2xl text-sm text-gray-600">
-                                    {{ trans('filament-subscriptions::messages.view.it_looks_like_no_active_subscription') }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-
-                {{-- Plans --}}
-                <div class="flex flex-col gap-4">
-                    @forelse ($plans as $plan)
-                        <x-filament::section
-                            :heading="$plan->name"
-                            :headerActions="[
-                                ($this->changePlanAction($plan))(['plan' => $plan])
-                            ]"
-                            :description="$plan->description"
-                        >
-                            <div>
-                               <div>
-                                   @if ($plan->isFree())
-                                       <span>{{ trans('filament-subscriptions::messages.view.free') }}</span>
-                                   @else
-                                       <span class="text-3xl font-bold">{{ Number::currency($plan->price + $plan->signup_fee, in: $plan->currency) }}</span>
-                                       <small>/ {{ $plan->invoice_period > 1 ? $plan->invoice_period : '' }} {{ $plan->invoice_interval }}</small>
-                                       @if ($plan->hasTrial())
-                                           <br>
-                                           <span class="text-gray-400">{{ $plan->trial_period }} {{ $plan->trial_interval }} {{ trans('filament-subscriptions::messages.view.trial') }}</span>
-                                       @endif
-                                   @endif
-                               </div>
-                            </div>
-                            <div class="mt-6 flex flex-col gap-2">
-                                @foreach ($plan->features as $feature)
-                                    <div class="flex justifiy-start gap-2">
-                                        <div>
-                                            @if (is_numeric($feature->value) || $feature->value == 'true' || $feature->value == 'unlimited')
-                                                <svg viewBox="0 0 20 20" fill="currentColor" class="flex-shrink-0 w-5 h-5 text-custom-500" style="--c-400:var(--success-400);--c-500:var(--success-500);--c-600:var(--success-600);">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            @else
-                                                <svg viewBox="0 0 20 20" fill="currentColor" class="flex-shrink-0 w-5 h-5 text-gray-400">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                                </svg>
-                                            @endif
-                                        </div>
-                                        <div class="text-sm text-gray-600">
-                                            {{ $feature->name }}
-                                            @if (is_numeric($feature->value) || $feature->value == 'unlimited')
-                                                ({{ __(Str::title($feature->value)) }})
-                                            @endif
-                                        </div>
+                            @if ($plan->isFree())
+                                <span class="fi-subscriptions-billing-price">{{ trans('filament-subscriptions::messages.view.free') }}</span>
+                            @else
+                                <span class="fi-subscriptions-billing-price">{{ Number::currency($plan->price + $plan->signup_fee, in: $plan->currency) }}</span>
+                                <span class="fi-subscriptions-billing-muted">/ {{ $plan->invoice_period > 1 ? $plan->invoice_period : '' }} {{ $plan->invoice_interval }}</span>
+                                @if ($plan->hasTrial())
+                                    <div class="fi-subscriptions-billing-muted">
+                                        {{ $plan->trial_period }} {{ $plan->trial_interval }} {{ trans('filament-subscriptions::messages.view.trial') }}
                                     </div>
-                                @endforeach
-                            </div>
-                        </x-filament::section>
-                    @empty
-                        <div>
-                            {{ trans('filament-subscriptions::messages.view.no_plans_available') }}
+                                @endif
+                            @endif
                         </div>
-                    @endforelse
+
+                        <div class="fi-subscriptions-billing-features">
+                            @foreach ($plan->features as $feature)
+                                @php
+                                    $included = is_numeric($feature->value) || in_array($feature->value, ['true', 'unlimited'], true);
+                                @endphp
+                                <div class="fi-subscriptions-billing-feature">
+                                    <x-filament::icon
+                                        :icon="$included ? 'heroicon-s-check-circle' : 'heroicon-s-x-circle'"
+                                        :style="$included ? 'color: var(--success-500)' : 'color: var(--gray-400)'"
+                                    />
+                                    <span>
+                                        {{ $feature->name }}
+                                        @if (is_numeric($feature->value) || $feature->value === 'unlimited')
+                                            ({{ __(Str::title($feature->value)) }})
+                                        @endif
+                                    </span>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div style="margin-top: 1.25rem">
+                            {{ ($this->changePlanAction($plan))(['plan' => $plan]) }}
+                        </div>
+                    </x-filament::section>
+                @empty
+                    <div class="fi-subscriptions-billing-muted">
+                        {{ trans('filament-subscriptions::messages.view.no_plans_available') }}
+                    </div>
+                @endforelse
+            </div>
+        </x-filament::section>
+
+        @if ($currentSubscription && $currentSubscription->active())
+            <x-filament::section :heading="trans('filament-subscriptions::messages.view.cancel_subscription')">
+                <div class="fi-subscriptions-billing-muted">
+                    {{ trans('filament-subscriptions::messages.view.cancel_subscription_info') }}
+                </div>
+                <div style="margin-top: .75rem">
+                    {{ $this->cancelPlanAction }}
                 </div>
             </x-filament::section>
-
-
-            {{-- Cancel Subscription --}}
-            @if ($currentSubscription && $currentSubscription->active())
-                <x-filament::section :heading="trans('filament-subscriptions::messages.view.cancel_subscription')">
-                    <div class="max-w-xl text-sm text-gray-600">
-                        {{ trans('filament-subscriptions::messages.view.cancel_subscription_info') }}
-                    </div>
-                    <div class="mt-3">
-                        {{ $this->cancelPlanAction }}
-                    </div>
-                </x-filament::section>
-            @endif
-        </div>
+        @endif
     </div>
-
 
     <x-filament-actions::modals />
 </div>

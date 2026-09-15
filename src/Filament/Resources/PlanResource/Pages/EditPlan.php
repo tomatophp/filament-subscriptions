@@ -2,9 +2,9 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages;
 
-use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
 
 class EditPlan extends EditRecord
 {
@@ -13,7 +13,15 @@ class EditPlan extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
+    }
+
+    /**
+     * Fill the translatable fields with every locale, not the current-locale string.
+     */
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        return PlanResource::fillTranslations($this->getRecord(), $data);
     }
 }

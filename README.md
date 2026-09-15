@@ -10,19 +10,22 @@ Manage subscriptions and feature access with customizable plans in FilamentPHP
 
 thanks for [Laravel Subscriptions](https://github.com/laravelcm/laravel-subscriptions) you can review it before use this package.
 
+## Version Compatibility
+
+| Plugin | Filament | Laravel | PHP |
+|--------|----------|---------|-----|
+| 5.x    | 5.x      | 12.x - 13.x | 8.2+ |
+| 1.x    | 3.x      | 10.x - 11.x | 8.1+ |
+
 ## Screenshots
 
-![Tenant Menu](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/tenant-menu.png)
-![User Menu](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/user-menu.png)
-![Billing Page](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/billing-page.png)
-![Change Subscription Modal](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/change-subscription-modal.png)
-![Plans](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/plans.png)
-![Edit Plan](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/edit-plan.png)
-![Create Feature](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/create-feature.png)
-![Features](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/features.png)
-![Subscriptions](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/subscriptions.png)
-![Create Subscription](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/create-subscription.png)
-![Cancel Modal](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/cancel-modal.png)
+![Billing Page](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/billing-light.png)
+![Billing Page Dark](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/billing-dark.png)
+![Plans](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/plans-light.png)
+![Plans Dark](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/plans-dark.png)
+![Edit Plan](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/plan-edit-light.png)
+![Subscriptions](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/subscriptions-light.png)
+![Subscriptions Dark](https://raw.githubusercontent.com/tomatophp/filament-subscriptions/master/arts/subscriptions-dark.png)
 
 
 ## Features

@@ -2,24 +2,23 @@
 
 namespace TomatoPHP\FilamentSubscriptions;
 
-use TomatoPHP\FilamentSubscriptions\Http\Middleware\VerifyBillableIsSubscribed;
 use Closure;
-use Filament\Billing\Providers\Contracts\Provider;
+use Filament\Billing\Providers\Contracts\BillingProvider;
 use Illuminate\Http\RedirectResponse;
+use TomatoPHP\FilamentSubscriptions\Http\Middleware\VerifyBillableIsSubscribed;
 
-class FilamentSubscriptionsProvider implements Provider
+class FilamentSubscriptionsProvider implements BillingProvider
 {
     /**
      * @return string | Closure | array<class-string, string>
      */
-    public function getRouteAction(): string | Closure | array
+    public function getRouteAction(): string|Closure|array
     {
         return function (): RedirectResponse {
-            if(filament()->getTenant()){
-                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing', ['tenant'=> filament()->getTenant()->{filament()->getCurrentPanel()->getTenantSlugAttribute()}]);
-            }
-            else {
-                return redirect()->route('filament.'.filament()->getCurrentPanel()->getId().'.tenant.billing');
+            if (filament()->getTenant()) {
+                return redirect()->route('filament.'.filament()->getCurrentOrDefaultPanel()->getId().'.tenant.billing', ['tenant' => filament()->getTenant()->{filament()->getCurrentOrDefaultPanel()->getTenantSlugAttribute()}]);
+            } else {
+                return redirect()->route('filament.'.filament()->getCurrentOrDefaultPanel()->getId().'.tenant.billing');
             }
         };
     }

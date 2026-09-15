@@ -6,12 +6,14 @@ namespace TomatoPHP\FilamentSubscriptions\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Laravelcm\Subscriptions\Models\SubscriptionUsage;
 use Laravelcm\Subscriptions\Services\Period;
 use Laravelcm\Subscriptions\Traits\BelongsToPlan;
 use Laravelcm\Subscriptions\Traits\HasSlug;
@@ -32,36 +34,35 @@ use Spatie\Translatable\HasTranslations;
  * @property Carbon|null $trial_ends_at
  * @property Carbon|null $starts_at
  * @property Carbon|null $ends_at
- * @property Carbon|null $cancels_at
  * @property Carbon|null $canceled_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property-read Plan $plan
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravelcm\Subscriptions\Models\SubscriptionUsage[] $usage
+ * @property-read Collection|SubscriptionUsage[] $usage
  * @property-read Model $subscriber
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription byPlanId($planId)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription findEndedPeriod()
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription findEndedTrial()
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription findEndingPeriod($dayRange = 3)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription findEndingTrial($dayRange = 3)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription ofSubscriber(\Illuminate\Database\Eloquent\Model $subscriber)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereCanceledAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereCancelsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereEndsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription wherePlanId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereStartsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereTrialEndsAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereSubscriberId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Subscription whereSubscriberType($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription byPlanId($planId)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription findEndedPeriod()
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription findEndedTrial()
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription findEndingPeriod($dayRange = 3)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription findEndingTrial($dayRange = 3)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription ofSubscriber(Model $subscriber)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereCanceledAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereCancelsAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereCreatedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereDeletedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereDescription($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereEndsAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereId($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereTitle($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription wherePlanId($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereSlug($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereStartsAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereTrialEndsAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereUpdatedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereSubscriberId($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Subscription whereSubscriberType($value)
  */
 class Subscription extends Model
 {
@@ -81,7 +82,6 @@ class Subscription extends Model
         'trial_ends_at',
         'starts_at',
         'ends_at',
-        'cancels_at',
         'canceled_at',
     ];
 
@@ -93,7 +93,6 @@ class Subscription extends Model
         'trial_ends_at' => 'datetime',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
-        'cancels_at' => 'datetime',
         'canceled_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
@@ -118,7 +117,7 @@ class Subscription extends Model
         parent::boot();
 
         static::creating(function (self $model): void {
-            if ( ! $model->starts_at || ! $model->ends_at) {
+            if (! $model->starts_at || ! $model->ends_at) {
                 $model->setNewPeriod();
             }
         });
@@ -371,7 +370,7 @@ class Subscription extends Model
 
         // If the feature value is zero, let's return false since
         // there's no uses available. (useful to disable countable features)
-        if ( ! $usage || $usage->expired() || $featureValue === null || $featureValue === '0' || $featureValue === 'false') {
+        if (! $usage || $usage->expired() || $featureValue === null || $featureValue === '0' || $featureValue === 'false') {
             return false;
         }
 
@@ -386,7 +385,7 @@ class Subscription extends Model
     {
         $usage = $this->usage()->byFeatureSlug($featureSlug)->first();
 
-        return ( ! $usage || $usage->expired()) ? 0 : $usage->used;
+        return (! $usage || $usage->expired()) ? 0 : $usage->used;
     }
 
     /**

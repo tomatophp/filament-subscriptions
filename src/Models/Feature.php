@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace TomatoPHP\FilamentSubscriptions\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravelcm\Subscriptions\Traits\HasSlug;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravelcm\Subscriptions\Models\SubscriptionUsage;
 use Laravelcm\Subscriptions\Services\Period;
 use Laravelcm\Subscriptions\Traits\BelongsToPlan;
+use Laravelcm\Subscriptions\Traits\HasSlug;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\SlugOptions;
@@ -33,22 +36,22 @@ use Spatie\Translatable\HasTranslations;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property-read Plan $plan
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravelcm\Subscriptions\Models\SubscriptionUsage[] $usage
+ * @property-read Collection|SubscriptionUsage[] $usage
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature byPlanId($planId)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature ordered($direction = 'asc')
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature wherePlanId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereResettableInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereResettablePeriod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereSortOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Feature whereValue($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature byPlanId($planId)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature ordered($direction = 'asc')
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereCreatedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereDeletedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereDescription($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereId($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereTitle($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature wherePlanId($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereResettableInterval($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereResettablePeriod($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereSlug($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereSortOrder($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereUpdatedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Feature whereValue($value)
  */
 class Feature extends Model implements Sortable
 {

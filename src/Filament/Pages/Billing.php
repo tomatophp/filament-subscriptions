@@ -2,18 +2,20 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Pages;
 
+use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
+use Filament\Pages\Concerns\HasTopbar;
 use Filament\Pages\Page;
-use Filament\Pages\Concerns;
+use Filament\Pages\PageConfiguration;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Laravelcm\Subscriptions\Models\Plan;
@@ -23,22 +25,19 @@ use TomatoPHP\FilamentSubscriptions\Events\RenewPlan;
 use TomatoPHP\FilamentSubscriptions\Events\SubscribePlan;
 use TomatoPHP\FilamentSubscriptions\Facades\FilamentSubscriptions;
 use TomatoPHP\FilamentSubscriptions\Http\Middleware\VerifyBillableIsSubscribed;
-use TomatoPHP\FilamentSubscriptions\Models\Subscription;
-
-use function Pest\Laravel\call;
 
 class Billing extends Page implements HasActions
 {
-    use Concerns\HasTopbar;
+    use HasTopbar;
     use InteractsWithActions;
 
     protected static string $layout = 'filament-subscriptions::layouts.billing';
 
-    protected static string | array $withoutRouteMiddleware = VerifyBillableIsSubscribed::class;
+    protected static string|array $withoutRouteMiddleware = VerifyBillableIsSubscribed::class;
 
-    public static function registerRoutes(Panel $panel): void
+    public static function registerRoutes(Panel $panel, ?PageConfiguration $configuration = null): void
     {
-        Route::name('tenant.')->group(fn () => static::routes($panel));
+        Route::name('tenant.')->group(fn () => static::routes($panel, $configuration));
     }
 
     public static function shouldRegisterNavigation(): bool
@@ -46,14 +45,11 @@ class Billing extends Page implements HasActions
         return false;
     }
 
-    public static function getRouteName(?string $panel = null): string
+    public static function getRouteName(?Panel $panel = null): string
     {
-        $routeName = 'filament';
-        if ($panel !== null) {
-            // we don`t use Filament::getCurrentPanel(), because if `$panel` presented it will be found or throwed exception
-            $routeName .= '.' . Filament::getPanel($panel)->getId();
-        }
-        return $routeName . '.tenant.billing';
+        $panel ??= Filament::getCurrentOrDefaultPanel();
+
+        return 'filament.'.$panel->getId().'.tenant.billing';
     }
 
     protected function getLayoutData(): array
@@ -70,11 +66,15 @@ class Billing extends Page implements HasActions
 
     protected static ?string $title = 'Billing';
 
-    protected static string $view = 'filament-subscriptions::pages.billing';
+    protected string $view = 'filament-subscriptions::pages.billing';
 
     public Authenticatable $user;
+
     public Collection $plans;
-    public ?Subscription $currentSubscription;
+
+    // The configured laravel-subscriptions subscription model (laravelcm's by default).
+    public ?Model $currentSubscription = null;
+
     public string $currentPanel;
 
     public function mount(): ?RedirectResponse
@@ -84,9 +84,10 @@ class Billing extends Page implements HasActions
             ->orderBy('sort_order')
             ->get();
         $this->currentSubscription = $this->user->planSubscriptions()->first();
-        $this->currentPanel = Filament::getCurrentPanel()->getId();
+        // The panel URL, not its id: the id is not a path when the panel uses a custom path.
+        $this->currentPanel = Filament::getCurrentOrDefaultPanel()->getUrl();
 
-        if($this->currentSubscription){
+        if ($this->currentSubscription) {
             return null;
         }
 
@@ -111,7 +112,7 @@ class Billing extends Page implements HasActions
         );
     }
 
-    public function changePlanAction(?Plan $plan=null): Action
+    public function changePlanAction(?Plan $plan = null): Action
     {
         $currentSubscription = $this->user->planSubscriptions()->first();
         $isCurrentPlan = $plan
@@ -121,21 +122,21 @@ class Billing extends Page implements HasActions
 
         return Action::make('changePlanAction')
             ->requiresConfirmation()
-            ->label(fn(): ?string => $this->textByPlan($plan))
-            ->modalHeading(fn(array $arguments): ?string => $this->textByPlan(Plan::find($arguments['plan']['id'])))
-            ->disabled(fn(): bool => $isCurrentPlanAndActive)
-            ->color(fn(): string => match (true) {
+            ->label(fn (): ?string => $this->textByPlan($plan))
+            ->modalHeading(fn (array $arguments): ?string => $this->textByPlan(Plan::find($arguments['plan']['id'])))
+            ->disabled(fn (): bool => $isCurrentPlanAndActive)
+            ->color(fn (): string => match (true) {
                 $isCurrentPlanAndActive => 'success',
-                $isCurrentPlan && !$currentSubscription->active() => 'warning',
+                $isCurrentPlan && ! $currentSubscription->active() => 'warning',
                 default => 'primary',
             })
-            ->icon(fn():string => match (true) {
+            ->icon(fn (): string => match (true) {
                 $isCurrentPlanAndActive => 'heroicon-s-check-circle',
                 $isCurrentPlan && $currentSubscription->canceled() => 'heroicon-s-arrow-path-rounded-square',
                 $isCurrentPlan && $currentSubscription->ended() => 'heroicon-s-arrow-path-rounded-square',
                 default => 'heroicon-s-arrows-right-left',
             })
-            ->action(function(array $arguments){
+            ->action(function (array $arguments) {
                 $this->subscribe($arguments['plan']['id']);
             });
     }
@@ -145,22 +146,22 @@ class Billing extends Page implements HasActions
         return Action::make('cancelPlanAction')
             ->requiresConfirmation()
             ->label(trans('filament-subscriptions::messages.view.cancel_subscription'))
-            ->action(function(){
+            ->action(function () {
                 $this->cancel();
             });
     }
 
     public function subscribe(int $plan, bool $main = false)
     {
-        if (!$plan) {
-            $this->handeNotificationWithRedirectToPanel(
+        $plan = Plan::find($plan);
+
+        if (! $plan) {
+            return $this->handeNotificationWithRedirectToPanel(
                 __('filament-subscriptions::messages.notifications.invalid.title'),
                 __('filament-subscriptions::messages.notifications.invalid.message'),
                 'danger',
             );
         }
-
-        $plan = Plan::find($plan);
 
         if ($this->currentSubscription) {
             if ($this->currentSubscription->plan_id === $plan->id) {
@@ -171,23 +172,22 @@ class Billing extends Page implements HasActions
                     );
                 }
 
-                $this->currentSubscription->canceled_at =  Carbon::parse($this->currentSubscription->cancels_at)->addDays(1);
-                $this->currentSubscription->cancels_at = Carbon::parse($this->currentSubscription->cancels_at)->addDays(1);
-                $this->currentSubscription->ends_at =  Carbon::parse($this->currentSubscription->cancels_at)->addDays(1);
+                // Start a new period. laravel-subscriptions 1.8 dropped the cancels_at column.
+                $this->currentSubscription->canceled_at = null;
                 $this->currentSubscription->save();
-                $this->currentSubscription->renew($plan);
+                $this->currentSubscription->renew();
 
                 Event::dispatch(new RenewPlan([
-                    "old" => $this->currentSubscription->plan,
-                    "new" => $plan,
-                    "subscription" => $this->currentSubscription
+                    'old' => $this->currentSubscription->plan,
+                    'new' => $plan,
+                    'subscription' => $this->currentSubscription,
                 ]));
 
-                if(!$main){
-                    return call_user_func(FilamentSubscriptions::getAfterRenew(),[
-                        "old" => $this->currentSubscription->plan,
-                        "new" => $plan,
-                        "subscription" => $this->currentSubscription
+                if (! $main) {
+                    return call_user_func(FilamentSubscriptions::getAfterRenew(), [
+                        'old' => $this->currentSubscription->plan,
+                        'new' => $plan,
+                        'subscription' => $this->currentSubscription,
                     ]);
                 }
 
@@ -199,18 +199,18 @@ class Billing extends Page implements HasActions
             }
 
             Event::dispatch(new ChangePlan([
-                "old" => $this->currentSubscription->plan,
-                "new" => $plan,
-                "subscription" => $this->currentSubscription
+                'old' => $this->currentSubscription->plan,
+                'new' => $plan,
+                'subscription' => $this->currentSubscription,
             ]));
 
             $this->currentSubscription->changePlan($plan);
 
-            if(!$main){
+            if (! $main) {
                 return call_user_func(FilamentSubscriptions::getAfterChange(), [
-                    "old" => $this->currentSubscription->plan,
-                    "new" => $plan,
-                    "subscription" => $this->currentSubscription
+                    'old' => $this->currentSubscription->plan,
+                    'new' => $plan,
+                    'subscription' => $this->currentSubscription,
                 ]);
             }
 
@@ -225,16 +225,16 @@ class Billing extends Page implements HasActions
         $this->user->newPlanSubscription('main', $plan);
 
         Event::dispatch(new SubscribePlan([
-            "old" => null,
-            "new" => $plan,
-            "subscription" => $this->user->planSubscriptions()->first()
+            'old' => null,
+            'new' => $plan,
+            'subscription' => $this->user->planSubscriptions()->first(),
         ]));
 
-        if(!$main){
+        if (! $main) {
             return call_user_func(FilamentSubscriptions::getAfterSubscription(), [
-                "old" => null,
-                "new" => $plan,
-                "subscription" => $this->user->planSubscriptions()->first()
+                'old' => null,
+                'new' => $plan,
+                'subscription' => $this->user->planSubscriptions()->first(),
             ]);
         }
 
@@ -260,21 +260,20 @@ class Billing extends Page implements HasActions
         try {
             foreach ($activeSubscriptions as $subscription) {
                 Event::dispatch(new CancelPlan([
-                    "old" => null,
-                    "new" => $subscription->plan,
-                    "subscription" => $subscription
+                    'old' => null,
+                    'new' => $subscription->plan,
+                    'subscription' => $subscription,
                 ]));
 
                 $subscription->cancel(true);
             }
 
-
             return call_user_func(FilamentSubscriptions::getAfterCanceling(), [
-                "old" => null,
-                "new" => $subscription->plan,
-                "subscription" => $subscription
+                'old' => null,
+                'new' => $subscription->plan,
+                'subscription' => $subscription,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handeNotificationWithRedirectToPanel(
                 __('filament-subscriptions::messages.notifications.cancel_invalid.title'),
                 __('filament-subscriptions::messages.notifications.cancel_invalid.message'),
@@ -283,12 +282,13 @@ class Billing extends Page implements HasActions
         }
     }
 
-    private function textByPlan(?Plan $plan = null): ?string {
-        if (!$plan) {
+    private function textByPlan(?Plan $plan = null): ?string
+    {
+        if (! $plan) {
             return null;
         }
 
-        if (!$hasSubscription = $this->user->planSubscriptions()->first()) {
+        if (! $hasSubscription = $this->user->planSubscriptions()->first()) {
             return __('filament-subscriptions::messages.view.subscribe');
         }
 

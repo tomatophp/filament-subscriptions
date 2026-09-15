@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace TomatoPHP\FilamentSubscriptions\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravelcm\Subscriptions\Traits\HasSlug;
+use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\SlugOptions;
-use Spatie\EloquentSortable\Sortable;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -36,35 +39,35 @@ use Spatie\Translatable\HasTranslations;
  * @property int $prorate_extend_due
  * @property int $active_subscribers_limit
  * @property int $sort_order
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravelcm\Subscriptions\Models\Feature[] $features
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravelcm\Subscriptions\Models\Subscription[] $subscriptions
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read Collection|\Laravelcm\Subscriptions\Models\Feature[] $features
+ * @property-read Collection|\Laravelcm\Subscriptions\Models\Subscription[] $subscriptions
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan ordered($direction = 'asc')
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereActiveSubscribersLimit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereCurrency($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereGraceInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereGracePeriod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereInvoiceInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereInvoicePeriod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereProrateDay($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereProrateExtendDue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereProratePeriod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereSignupFee($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereSortOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereTrialInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereTrialPeriod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\Laravelcm\Subscriptions\Models\Plan whereUpdatedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan ordered($direction = 'asc')
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereActiveSubscribersLimit($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereCreatedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereCurrency($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereDeletedAt($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereDescription($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereGraceInterval($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereGracePeriod($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereId($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereInvoiceInterval($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereInvoicePeriod($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereIsActive($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereName($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan wherePrice($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereProrateDay($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereProrateExtendDue($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereProratePeriod($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereSignupFee($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereSlug($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereSortOrder($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereTrialInterval($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereTrialPeriod($value)
+ * @method static Builder|\Laravelcm\Subscriptions\Models\Plan whereUpdatedAt($value)
  */
 class Plan extends Model implements Sortable
 {

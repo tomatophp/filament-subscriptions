@@ -2,12 +2,12 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource\Pages;
 
-use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Laravelcm\Subscriptions\Models\Plan;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\SubscriptionResource;
 
 class EditSubscription extends EditRecord
 {
@@ -16,7 +16,7 @@ class EditSubscription extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
@@ -27,7 +27,7 @@ class EditSubscription extends EditRecord
         $subscriberType = $data['subscriber_type'];
         $subscriberModel = $subscriberType::find($data['subscriber_id']);
 
-        if (!$subscriberModel) {
+        if (! $subscriberModel) {
             return Notification::make()
                 ->warning()
                 ->title('Subscriber not found.');

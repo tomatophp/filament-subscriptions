@@ -1,33 +1,24 @@
-
-@php
-    use Filament\Support\Enums\MaxWidth;
-@endphp
-
+{{-- Full-page billing layout: Filament 5's simple layout structure, without the panel sidebar. --}}
 <x-filament-panels::layout.base :livewire="$livewire">
-    @props([
-        'after' => null,
-        'heading' => null,
-        'subheading' => null,
-    ])
-
-    <div class="fi-simple-layout flex min-h-screen flex-col items-center">
+    <div class="fi-simple-layout">
         @if (($hasTopbar ?? true) && filament()->auth()->check())
-            <div
-                class="absolute end-0 top-0 flex h-16 items-center gap-x-4 pe-4 md:pe-6 lg:pe-8"
-            >
+            <div class="fi-simple-layout-header">
                 @if (filament()->hasDatabaseNotifications())
-                    @livewire(Filament\Livewire\DatabaseNotifications::class, ['lazy' => true])
+                    @livewire(filament()->getDatabaseNotificationsLivewireComponent(), [
+                        'lazy' => filament()->hasLazyLoadedDatabaseNotifications(),
+                        'position' => \Filament\Enums\DatabaseNotificationsPosition::Topbar,
+                    ])
                 @endif
 
-                <x-filament-panels::user-menu />
+                @if (filament()->hasUserMenu())
+                    @livewire(\Filament\Livewire\SimpleUserMenu::class)
+                @endif
             </div>
         @endif
 
-        <div
-            class="fi-simple-main-ctn"
-        >
+        <main style="width: 100%">
             {{ $slot }}
-        </div>
+        </main>
 
         {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $livewire->getRenderHookScopes()) }}
     </div>

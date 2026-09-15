@@ -2,23 +2,33 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Resources;
 
-use TomatoPHP\FilamentLocations\Models\Currency;
-use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages;
-use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\RelationManagers;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Model;
 use Laravelcm\Subscriptions\Interval;
+use TomatoPHP\FilamentLocations\Models\Currency;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages\CreatePlan;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages\EditPlan;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages\ListPlans;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\RelationManagers\FeatureManager;
 use TomatoPHP\FilamentSubscriptions\Models\Plan;
 use TomatoPHP\FilamentTranslationComponent\Components\Translation;
 
 class PlanResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-bookmark';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bookmark';
 
     protected static ?int $navigationSort = 1;
 
@@ -47,11 +57,11 @@ class PlanResource extends Resource
         return trans('filament-subscriptions::messages.plans.title');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()
+        return $schema
+            ->components([
+                Section::make()
                     ->schema([
                         Translation::make('name')
                             ->columnSpanFull()
@@ -60,25 +70,25 @@ class PlanResource extends Resource
                         Translation::make('description')
                             ->columnSpanFull()
                             ->label(trans('filament-subscriptions::messages.plans.columns.description')),
-                        Forms\Components\Select::make('currency')
+                        Select::make('currency')
                             ->columnSpanFull()
                             ->default('USD')
                             ->searchable()
                             ->label(trans('filament-subscriptions::messages.plans.columns.currency'))
                             ->options(Currency::query()->pluck('name', 'iso')->toArray())
                             ->required(),
-                        Forms\Components\TextInput::make('price')
+                        TextInput::make('price')
                             ->default(0)
                             ->label(trans('filament-subscriptions::messages.plans.columns.price'))
                             ->required()
                             ->numeric()
                             ->prefix('$'),
-                        Forms\Components\TextInput::make('signup_fee')
+                        TextInput::make('signup_fee')
                             ->label(trans('filament-subscriptions::messages.plans.columns.signup_fee'))
                             ->default(0)
                             ->numeric()
                             ->prefix('$'),
-                        Forms\Components\Select::make('invoice_interval')
+                        Select::make('invoice_interval')
                             ->default(Interval::MONTH->value)
                             ->label(trans('filament-subscriptions::messages.plans.columns.invoice_interval'))
                             ->options([
@@ -86,12 +96,12 @@ class PlanResource extends Resource
                                 Interval::MONTH->value => trans('filament-subscriptions::messages.plans.columns.month'),
                                 Interval::YEAR->value => trans('filament-subscriptions::messages.plans.columns.year'),
                             ])->required(),
-                        Forms\Components\TextInput::make('invoice_period')
+                        TextInput::make('invoice_period')
                             ->label(trans('filament-subscriptions::messages.plans.columns.invoice_period'))
                             ->default(0)
                             ->numeric()
                             ->required(),
-                        Forms\Components\Select::make('trial_interval')
+                        Select::make('trial_interval')
                             ->default(Interval::MONTH->value)
                             ->label(trans('filament-subscriptions::messages.plans.columns.trial_interval'))
                             ->default(0)
@@ -100,13 +110,13 @@ class PlanResource extends Resource
                                 Interval::MONTH->value => trans('filament-subscriptions::messages.plans.columns.month'),
                                 Interval::YEAR->value => trans('filament-subscriptions::messages.plans.columns.year'),
                             ]),
-                        Forms\Components\TextInput::make('trial_period')
+                        TextInput::make('trial_period')
                             ->label(trans('filament-subscriptions::messages.plans.columns.trial_period'))
                             ->default(0)
                             ->numeric(),
-                        Forms\Components\Toggle::make('is_active')
+                        Toggle::make('is_active')
                             ->label(trans('filament-subscriptions::messages.plans.columns.is_active')),
-                    ])->columns(2)
+                    ])->columns(2),
             ]);
     }
 
@@ -115,49 +125,66 @@ class PlanResource extends Resource
         return $table
             ->reorderable('sort_order')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(trans('filament-subscriptions::messages.plans.columns.name'))
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
+                TextColumn::make('price')
                     ->label(trans('filament-subscriptions::messages.plans.columns.price'))
                     ->sortable()
                     ->searchable()
-                    ->money(locale: 'en', currency: function ($record){
+                    ->money(locale: 'en', currency: function ($record) {
                         return $record->currency;
                     })
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label(trans('filament-subscriptions::messages.plans.columns.is_active')),
             ])
             ->defaultSort('sort_order', 'aces')
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * Translatable attributes (name, description) as locale => value arrays for the Translation field,
+     * instead of the current-locale string that attributesToArray() returns.
+     */
+    public static function fillTranslations(Model $record, array $data): array
+    {
+        if (! method_exists($record, 'getTranslations')) {
+            return $data;
+        }
+
+        foreach (['name', 'description'] as $attribute) {
+            $data[$attribute] = $record->getTranslations($attribute);
+        }
+
+        return $data;
     }
 
     public static function getRelations(): array
     {
         return [
-            RelationManagers\FeatureManager::class,
+            FeatureManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPlans::route('/'),
-            'create' => Pages\CreatePlan::route('/create'),
-            'edit' => Pages\EditPlan::route('/{record}/edit'),
+            'index' => ListPlans::route('/'),
+            'create' => CreatePlan::route('/create'),
+            'edit' => EditPlan::route('/{record}/edit'),
         ];
     }
 }

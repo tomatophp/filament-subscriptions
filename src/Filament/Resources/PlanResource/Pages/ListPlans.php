@@ -2,9 +2,9 @@
 
 namespace TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource\Pages;
 
-use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
-use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use TomatoPHP\FilamentSubscriptions\Filament\Resources\PlanResource;
 
 class ListPlans extends ListRecords
 {
@@ -13,7 +13,7 @@ class ListPlans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 }
