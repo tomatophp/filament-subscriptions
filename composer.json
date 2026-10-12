@@ -2,6 +2,12 @@
     "name": "tomatophp/filament-subscriptions",
     "type": "library",
     "description": "Manage subscriptions and feature access with customizable plans in FilamentPHP",
+    "homepage": "https://tomatophp.com/en/plugins/filament-subscriptions",
+    "support": {
+        "issues": "https://github.com/tomatophp/filament-subscriptions/issues",
+        "source": "https://github.com/tomatophp/filament-subscriptions",
+        "docs": "https://tomatophp.com/en/plugins/filament-subscriptions"
+    },
     "keywords": [
         "php",
         "laravel",
