@@ -54,6 +54,12 @@
         "pestphp/pest-plugin-laravel": "^4.0|^5.0",
         "pestphp/pest-plugin-livewire": "^4.0|^5.0"
     },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
